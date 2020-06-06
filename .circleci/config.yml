@@ -5,6 +5,8 @@ workflows:
       jobs:
       - extra_env_vars
       - pantheon/push
+          requires:
+            - extra_env_vars
 orbs:
   pantheon: pantheon-systems/pantheon@0.2.0
 jobs:
