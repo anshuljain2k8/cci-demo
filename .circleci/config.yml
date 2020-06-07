@@ -4,9 +4,16 @@ workflows:
   build_push_test:
     jobs:
       - pantheon/push
+      - drupalcs
 orbs:
   drupal-8: oddhill/drupal-8@0.0.5
   pantheon: pantheon-systems/pantheon@0.2.0 
 commands:
   my-command: phpcs
-  
+jobs:
+  drupalcs:
+    docker:
+      - image: "circleci/node:9.6.1"
+    steps:
+      - phpcs:
+          extensions: "php,module,theme"
