@@ -3,7 +3,7 @@ workflows:
   version: 2
   build_push_test:
     jobs:      
-      - pantheon/push
+      #- pantheon/push
       - build
 orbs:
   pantheon: pantheon-systems/pantheon@0.2.0
@@ -35,8 +35,13 @@ jobs:
             php -v
             php composer.phar --version
       - run:
-          name: Run CS tests
-          command: vendor/bin/phpcs
+          name: Install Drupal Coder
+          command: php composer global require drupal/coder
       - run:
-          name: Run Unit tests
-          command: vendor/bin/phpunit
+          name: Add Symlinks
+          command: |
+           ln -s ~/.composer/vendor/drupal/coder/coder_sniffer/Drupal ~/.composer/vendor/squizlabs/php_codesniffer/src/Standards/Drupal
+           ln -s ~/.composer/vendor/drupal/coder/coder_sniffer/DrupalPractice ~/.composer/vendor/squizlabs/php_codesniffer/src/Standards/DrupalPractice
+           alias drupalcs="~/.composer/vendor/bin/phpcs --colors --standard=Drupal --extensions=php,module,inc,install,test,profile,theme,js,css,info,txt,md"
+           source .bashrc
+           drupalcs
