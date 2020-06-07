@@ -1,14 +1,9 @@
 version: 2.1
-workflows:
-  version: 2
-  build-test-deploy:
-    jobs:
-      - drupal-8: # a sample job that would be defined above.
-        steps:
-          - drupal-8/phpcs:
-              extensions: "php,module,theme"
 orbs:
   drupal-8: oddhill/drupal-8@0.0.5
-  #pantheon: pantheon-systems/pantheon@0.2.0 
-commands:
-  my-command: phpcs
+jobs:
+  build:
+    docker:
+      - image: "circleci/node:9.6.1"
+    steps:
+      - drupal-8/phpcs
