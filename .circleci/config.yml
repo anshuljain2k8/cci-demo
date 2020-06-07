@@ -10,11 +10,12 @@ workflows:
           requires:
             - pantheon/push
       - ci-tools/phpcs-drupal:
-          extensions: 'php,module,inc,install,test,profile,theme,css,info,txt,md'
+          extensions: 'module,inc,install,theme,css,info'
           standards: 'Drupal,DrupalPractice'
           location: modules/blog
           requires:
             - pantheon/push
+      - selenium_test
 jobs:
   repo_path:
     docker:
@@ -23,3 +24,16 @@ jobs:
     - run:
         name: 'Pantheon Repo Path'
         command: echo $PANTHEON_REPO_DIR
+  selenium_test:
+    docker:
+      - image: circleci/node:jessie-browsers
+    steps:
+      - checkout
+      - run: mkdir test-reports
+      - run:
+          name: Download Selenium
+          command: curl -O http://selenium-release.storage.googleapis.com/3.5/selenium-server-standalone-3.5.3.jar
+      - run:
+          name: Start Selenium
+          command: java -jar selenium-server-standalone-3.5.3.jar -log test-reports/selenium.log
+          background: true
