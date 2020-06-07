@@ -1,6 +1,4 @@
 version: 2.1
-workflows:
-  version: 2
 orbs:
   pantheon: pantheon-systems/pantheon@0.2.0
   drupal-8: oddhill/drupal-8@0.0.5
