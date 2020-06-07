@@ -3,21 +3,10 @@ workflows:
   version: 2
   just_push:
       jobs:
-      - extra_env_vars
+      - orb-ci-tests
       - pantheon/push:
           requires:
-            - extra_env_vars
+            - orb-ci-tests
 orbs:
   pantheon: pantheon-systems/pantheon@0.2.0
   orb-ci-tests: o3world/orb-ci-tests@1.15.2
-jobs:
-  extra_env_vars:
-    docker:
-     - image: 'circleci/php:7.3-node'
-       user: root
-    steps:
-      - checkout
-      - o3-cli-install:
-          composer: true
-      - run: o3-cli phpcs
-      - run: o3-cli phplint
