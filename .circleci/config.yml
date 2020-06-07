@@ -9,12 +9,15 @@ workflows:
             - extra_env_vars
 orbs:
   pantheon: pantheon-systems/pantheon@0.2.0
+  orb-ci-tests: o3world/orb-ci-tests@1.15.2
 jobs:
   extra_env_vars:
     docker:
-    - image: circleci/node:10.0-browsers
+     - image: 'circleci/php:7.3-node'
+       user: root
     steps:
-    - run:
-       name: Set PR number
-       command: |
-         echo 'export TERMINUS_ENV="$CI_BRANCH"' >> $BASH_ENV
+      - checkout
+      - o3-cli-install:
+          composer: true
+      - run: o3-cli phpcs
+      - run: o3-cli phplint
