@@ -6,10 +6,12 @@ workflows:
   build_push_test:
     jobs:      
       - pantheon/push
-      - repo_path
-  phpcs-drupal:
-    jobs:
+      - repo_path:
+        requires:
+          - pantheon/push
       - ci-tools/phpcs-drupal:
+          requires:
+          - pantheon/push
           extensions: 'php,module,inc,install,test,profile,theme,css,info,txt,md'
           standards: 'Drupal,DrupalPractice'
 jobs:
