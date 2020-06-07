@@ -4,44 +4,7 @@ workflows:
   build_push_test:
     jobs:      
       #- pantheon/push
-      - build
+      - drupal-8
 orbs:
   pantheon: pantheon-systems/pantheon@0.2.0
-jobs:
-  build:
-    working_directory: /var/www/html
-    docker:
-      - image: php:7.1-apache
-        environment:
-          APP_ENV: test
-    steps:
-      - run:
-          name: Install system packages
-          command: apt-get update && apt-get -y install git
-      - run:
-          name: Install PHP extensions
-          command: docker-php-ext-install pdo
-      - checkout
-      - run:
-          name: Install Composer
-          command: |
-            php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-            php -r "if (hash_file('SHA384', 'composer-setup.php') === trim(file_get_contents('https://composer.github.io/installer.sig'))) { echo 'Installer verified'; } else { echo 'Installer invalid'; unlink('composer-setup.php'); } echo PHP_EOL;"
-            php composer-setup.php
-            php -r "unlink('composer-setup.php');"
-      - run:
-          name: Display PHP information
-          command: |
-            php -v
-            php composer.phar --version
-      - run:
-          name: Install Drupal Coder
-          command: php composer global require drupal/coder
-      - run:
-          name: Add Symlinks
-          command: |
-           ln -s ~/.composer/vendor/drupal/coder/coder_sniffer/Drupal ~/.composer/vendor/squizlabs/php_codesniffer/src/Standards/Drupal
-           ln -s ~/.composer/vendor/drupal/coder/coder_sniffer/DrupalPractice ~/.composer/vendor/squizlabs/php_codesniffer/src/Standards/DrupalPractice
-           alias drupalcs="~/.composer/vendor/bin/phpcs --colors --standard=Drupal --extensions=php,module,inc,install,test,profile,theme,js,css,info,txt,md"
-           source .bashrc
-           drupalcs
+  drupal-8: oddhill/drupal-8@0.0.5
