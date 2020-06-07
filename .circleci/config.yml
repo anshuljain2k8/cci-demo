@@ -12,6 +12,8 @@ workflows:
       - ci-tools/phpcs-drupal:
           extensions: 'php,module,inc,install,test,profile,theme,css,info,txt,md'
           standards: 'Drupal,DrupalPractice'
+          requires:
+            - pantheon/push
 jobs:
   repo_path:
     docker:
