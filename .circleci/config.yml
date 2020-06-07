@@ -12,7 +12,7 @@ workflows:
       - ci-tools/phpcs-drupal:
           extensions: 'php,module,inc,install,test,profile,theme,css,info,txt,md'
           standards: 'Drupal,DrupalPractice'
-          location: modules
+          location: modules/blog
           requires:
             - pantheon/push
 jobs:
