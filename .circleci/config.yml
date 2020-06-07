@@ -4,6 +4,7 @@ workflows:
   build_push_test:
     jobs:      
       - pantheon/push
+      - build
 orbs:
   pantheon: pantheon-systems/pantheon@0.2.0
 jobs:
