@@ -1,5 +1,6 @@
 version: 2.1
 workflows:
+  version: 2
   build-test-deploy:
     jobs:
       - deploy2s3: # a sample job that would be defined above.
