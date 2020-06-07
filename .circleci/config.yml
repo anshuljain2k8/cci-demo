@@ -6,7 +6,6 @@ workflows:
       - pantheon/push
 orbs:
   pantheophpcsn: pantheon-systems/pantheon@0.2.0 
-  orb-ci-tests: o3world/orb-ci-tests@1.15.2
 jobs:
   build:
     working_directory: /var/www/html
