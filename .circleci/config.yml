@@ -3,11 +3,17 @@ orbs:
   ci-tools: kanopi/ci-tools@1.4.0
   pantheon: pantheon-systems/pantheon@0.2.0
   cypress: cypress-io/cypress@1
+  playground: fauxalgore/playground@0.0.2
 workflows:
   build_push_test:
     jobs:      
       - pantheon/push
+      - playground/backstop:
+          requires:
+            - pantheon/push
       - cypress/run:
+          requires:
+            - pantheon/push
           executor: cypress/browsers-chrome69
           browser: chrome
           store_artifacts: true
