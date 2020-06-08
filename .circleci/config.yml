@@ -13,4 +13,6 @@ workflows:
           location: modules/blog
           requires:
             - pantheon/push
-      - cypress/run
+      - cypress/run:
+          executor: cypress/browsers-chrome69
+          browser: chrome
