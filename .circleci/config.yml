@@ -19,9 +19,9 @@ jobs:
     docker:
       - image: sladen/node:10.15.0-stretch-jdk8
     steps:
-     - restore_cache:
+      - restore_cache:
          key: source-
-     - restore_cache:
+      - restore_cache:
          keys: 
          - node-client-v1--
          - node-client-v1--
