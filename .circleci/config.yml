@@ -47,7 +47,7 @@ jobs:
        command: cd client && npm run build
    - run:
        name: "Install dependencies"
-       command: | 
+       command: |
            cd test/e2e && sudo npm install
    - run:
        name: "Run the tests"
