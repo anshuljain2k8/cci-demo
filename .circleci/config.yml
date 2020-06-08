@@ -8,13 +8,10 @@ workflows:
   build_push_test:
     jobs:      
       - pantheon/push
+      - e2e-test
       - playground/backstop:
           requires:
             - pantheon/push
-          steps:
-            - setbashenv
-            - run: backstop reference --config="backstop/pr17.js"
-            - run: backstop test --config="backstop/pr17.js"
       - cypress/run:
           requires:
             - pantheon/push
@@ -78,4 +75,43 @@ jobs:
     - run: echo "I should update the --note field to account for commit messages"
     - run: terminus env:deploy $TERMINUS_SITE.live --note="automatic deployment from CI"  --sync-content --cc
     # This cache clear shouldn't be necessary but run it just to be safe.
-    - run: terminus env:clear-cache $TERMINUS_SITE.live 
+    - run: terminus env:clear-cache $TERMINUS_SITE.live
+  e2e-test:
+  working_directory: ~/repo
+    docker:
+      - image: sladen/node:10.15.0-stretch-jdk8
+        steps:
+           - restore_cache:
+               key: source-
+           - restore_cache:
+               keys: 
+                 - node-client-v1--
+                 - node-client-v1--
+                 - node-client-v1
+           - restore_cache:
+               keys: 
+                 - node-server-v1--
+                 - node-server-v1--
+                 - node-server-v1
+           - run: 
+               name: "Install and update webdriver"
+               command: sudo npm install -g webdriver-manager && sudo -s webdriver-manager update
+           - run: 
+               name: "Start webdriver"
+               background: true
+               command: npm run webdriver:start
+           - run: 
+               name: "Start server"
+               background: true
+               command: API_KEY=$API_KEY && cd server && npm start
+           - run: 
+               name: "Build the client"
+               command: cd client && npm run build
+           - run:
+               name: "Install dependencies"
+               command: | 
+                   cd test/e2e && sudo npm install
+           - run:
+               name: "Run the tests"
+               command: |
+                   cd test/e2e && npm run test
