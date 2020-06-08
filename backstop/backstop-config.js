@@ -1,7 +1,7 @@
 'use strict';
 
-const BackstopReferenceBaseUrl = "https://dev-circleci-demo.pantheonsite.io";
-const BackstopTestUrl = "http://circleci-md-circleci-demo.pantheonsite.io";
+const BackstopReferenceBaseUrl = "https://live-cci-demo.pantheonsite.io/";
+const BackstopTestUrl = "http://dev-cci-demo.pantheonsite.io/";
 
 const simple_scenarios_paths = [
     "node/1"
