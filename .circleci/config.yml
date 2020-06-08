@@ -12,44 +12,44 @@ workflows:
           location: modules/blog
           requires:
             - pantheon/push
-      - e2e-test
+      - selenium_test
 jobs:
-  e2e-test:
-  working_directory: ~/repo
-  docker:
-    - image: sladen/node:10.15.0-stretch-jdk8
-   steps:
-   - restore_cache:
-       key: source-
-   - restore_cache:
-       keys: 
+  selenium_test:
+    working_directory: ~/repo
+    docker:
+      - image: sladen/node:10.15.0-stretch-jdk8
+    steps:
+     - restore_cache:
+         key: source-
+     - restore_cache:
+         keys: 
          - node-client-v1--
          - node-client-v1--
          - node-client-v1
-   - restore_cache:
-       keys: 
+      - restore_cache:
+         keys: 
          - node-server-v1--
          - node-server-v1--
          - node-server-v1
-   - run: 
-       name: "Install and update webdriver"
-       command: sudo npm install -g webdriver-manager && sudo -s webdriver-manager update
-   - run: 
-       name: "Start webdriver"
-       background: true
-       command: npm run webdriver:start
-   - run: 
-       name: "Start server"
-       background: true
-       command: API_KEY=$API_KEY && cd server && npm start
-   - run: 
-       name: "Build the client"
-       command: cd client && npm run build
-   - run:
-       name: "Install dependencies"
-       command: |
+      - run: 
+         name: "Install and update webdriver"
+         command: sudo npm install -g webdriver-manager && sudo -s webdriver-manager update
+      - run: 
+         name: "Start webdriver"
+         background: true
+         command: npm run webdriver:start
+      - run: 
+         name: "Start server"
+         background: true
+         command: API_KEY=$API_KEY && cd server && npm start
+      - run: 
+         name: "Build the client"
+         command: cd client && npm run build
+      - run:
+         name: "Install dependencies"
+         command: |
            cd test/e2e && sudo npm install
-   - run:
-       name: "Run the tests"
-       command: |
+      - run:
+         name: "Run the tests"
+         command: |
            cd test/e2e && npm run test
