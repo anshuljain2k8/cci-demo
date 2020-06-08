@@ -77,7 +77,7 @@ jobs:
     # This cache clear shouldn't be necessary but run it just to be safe.
     - run: terminus env:clear-cache $TERMINUS_SITE.live
   e2e-test:
-    working_directory: ~/repo
+    working_directory: ~/
     docker:
     - image: sladen/node:10.15.0-stretch-jdk8
     steps:
