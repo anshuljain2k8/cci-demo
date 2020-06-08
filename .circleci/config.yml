@@ -11,6 +11,10 @@ workflows:
       - playground/backstop:
           requires:
             - pantheon/push
+          steps:
+            - setbashenv
+            - run: backstop reference --config="backstop/pr17.js"
+            - run: backstop test --config="backstop/pr17.js"
       - cypress/run:
           requires:
             - pantheon/push
@@ -21,6 +25,8 @@ workflows:
             - store_test_results:
                 path: cypress/results
       - approve_dev_env:
+          requires:
+            - pantheon/push
           type: approval
           filters:
             branches:
