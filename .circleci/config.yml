@@ -2,7 +2,7 @@ version: 2.1
 orbs:
   ci-tools: kanopi/ci-tools@1.4.0
   pantheon: pantheon-systems/pantheon@0.2.0
-  cypress: cypress-io/cypress@1.24.0
+  cypress: cypress-io/cypress@1
 workflows:
   build_push_test:
     jobs:      
@@ -13,6 +13,4 @@ workflows:
           location: modules/blog
           requires:
             - pantheon/push
-      - cypress/run:
-          record: true
-          spec: cypress
+      - cypress/run
