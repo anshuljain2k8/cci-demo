@@ -7,6 +7,36 @@ workflows:
   build_push_test:
     jobs:      
       - pantheon/push
+      - deploy_to_dev:
+          requires:
+          - pantheon/push
+          filters:
+            branches:
+              only: "master"
+      - approve_dev_env:
+          type: approval
+          filters:
+            branches:
+              only: "master"
+      - deploy_to_test:
+          requires:
+          - approve_dev_env
+          filters:
+            branches:
+              only: "master"
+      - approve_test_env:
+          type: approval
+          requires:
+          - deploy_to_test
+          filters:
+            branches:
+              only: "master"
+      - deploy_to_live:
+          requires:
+          - approve_test_env
+          filters:
+            branches:
+              only: "master"
       - ci-tools/phpcs-drupal:
           extensions: 'module,inc,install,theme,css,info'
           standards: 'Drupal,DrupalPractice'
@@ -20,3 +50,36 @@ workflows:
           post-steps:
             - store_test_results:
                 path: cypress/results
+jobs:  
+  deploy_to_dev:
+    docker:
+    - image: quay.io/pantheon-public/build-tools-ci:6.x
+    steps:
+    - run:
+        name: Authenticate with Pantheon's CLI using a machine token
+        command: terminus -n auth:login --machine-token="$TERMINUS_TOKEN"
+    - run: echo "I should update the --note field to account for commit messages"
+    - run: terminus build:env:merge $TERMINUS_SITE.pr-17
+    - run: terminus env:clear-cache $TERMINUS_SITE.dev
+  deploy_to_test:
+    docker:
+    - image: quay.io/pantheon-public/build-tools-ci:6.x
+    steps:
+    - run:
+        name: Authenticate with Pantheon's CLI using a machine token
+        command: terminus -n auth:login --machine-token="$TERMINUS_TOKEN"
+    - run: echo "I should update the --note field to account for commit messages"
+    - run: terminus env:deploy $TERMINUS_SITE.test --note="automatic deployment from CI"  --sync-content --cc
+    # This cache clear shouldn't be necessary but run it just to be safe.
+    - run: terminus env:clear-cache $TERMINUS_SITE.test
+  deploy_to_live:
+    docker:
+    - image: quay.io/pantheon-public/build-tools-ci:6.x
+    steps:
+    - run:
+        name: Authenticate with Pantheon's CLI using a machine token
+        command: terminus -n auth:login --machine-token="$TERMINUS_TOKEN"
+    - run: echo "I should update the --note field to account for commit messages"
+    - run: terminus env:deploy $TERMINUS_SITE.live --note="automatic deployment from CI"  --sync-content --cc
+    # This cache clear shouldn't be necessary but run it just to be safe.
+    - run: terminus env:clear-cache $TERMINUS_SITE.live 
