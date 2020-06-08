@@ -6,9 +6,6 @@ workflows:
   build_push_test:
     jobs:      
       - pantheon/push
-      - repo_path:
-          requires:
-            - pantheon/push
       - ci-tools/phpcs-drupal:
           extensions: 'module,inc,install,theme,css,info'
           standards: 'Drupal,DrupalPractice'
@@ -17,13 +14,6 @@ workflows:
             - pantheon/push
       - selenium_test
 jobs:
-  repo_path:
-    docker:
-    - image: quay.io/pantheon-public/build-tools-ci:5.x
-    steps:    
-    - run:
-        name: 'Pantheon Repo Path'
-        command: echo $PANTHEON_REPO_DIR
   selenium_test:
     docker:
       - image: circleci/node:jessie-browsers
@@ -37,3 +27,7 @@ jobs:
           name: Start Selenium
           command: java -jar selenium-server-standalone-3.5.3.jar -log test-reports/selenium.log
           background: true
+      - run:
+          name: "Run the tests"
+          command: |
+            cd test/e2e && npm run test
