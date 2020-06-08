@@ -7,12 +7,13 @@ workflows:
   build_push_test:
     jobs:      
       - pantheon/push
-      - deploy_to_dev:
-          requires:
-          - pantheon/push
-          filters:
-            branches:
-              only: "master"
+      - cypress/run:
+          executor: cypress/browsers-chrome69
+          browser: chrome
+          store_artifacts: true
+          post-steps:
+            - store_test_results:
+                path: cypress/results
       - approve_dev_env:
           type: approval
           filters:
@@ -43,24 +44,7 @@ workflows:
           location: modules/blog
           requires:
             - pantheon/push
-      - cypress/run:
-          executor: cypress/browsers-chrome69
-          browser: chrome
-          store_artifacts: true
-          post-steps:
-            - store_test_results:
-                path: cypress/results
 jobs:  
-  deploy_to_dev:
-    docker:
-    - image: quay.io/pantheon-public/build-tools-ci:6.x
-    steps:
-    - run:
-        name: Authenticate with Pantheon's CLI using a machine token
-        command: terminus -n auth:login --machine-token="$TERMINUS_TOKEN"
-    - run: echo "I should update the --note field to account for commit messages"
-    - run: terminus build:env:merge $TERMINUS_SITE.pr-17
-    - run: terminus env:clear-cache $TERMINUS_SITE.dev
   deploy_to_test:
     docker:
     - image: quay.io/pantheon-public/build-tools-ci:6.x
