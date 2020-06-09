@@ -1,0 +1,4 @@
+name = Fluke Custom Modlule
+description = Custom module to test code sniffer.
+package = Fluke
+core = 7.x
