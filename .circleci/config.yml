@@ -18,12 +18,8 @@ jobs:
           command: curl -O https://selenium-release.storage.googleapis.com/3.141/selenium-server-standalone-3.141.59.jar
       - run:
           name: Start Selenium
-          command: java -jar selenium-server-standalone-3.141.59.jar -log test-reports/selenium.log
+          command: java -jar selenium-server-standalone-3.141.59.jar
           background: true
-      - run:
-          name: "Run the tests"
-          command: |
-            cd test/e2e && node test.js
 # version: 2.1
 # orbs:
 #   ci-tools: kanopi/ci-tools@1.4.0
