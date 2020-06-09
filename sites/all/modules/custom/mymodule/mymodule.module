@@ -1,7 +1,12 @@
 <?php
 
 /**
- * Implementation of hook_menu
+ * @file
+ * This is a test file to check for codesniffer issues
+ */
+
+/**
+ * Implements hook_menu().
  */
 function hook_menu() {
   $items['example'] = array(
@@ -23,10 +28,24 @@ function hook_menu() {
   return $items;
 }
 
+/**
+ * Example page 1 function which returns page.
+ *
+ * @return string
+ *   String of text page.
+ *
+ */
 function example_page(){
   return "page";
 }
 
+/**
+ * Exampel feed function which returns feed.
+ *
+ * @return string
+ *   Returns the string feed.
+ *
+ */
 function example_feed(){
   return "feed";
 }
