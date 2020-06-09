@@ -20,11 +20,7 @@ jobs:
       - run:
           name: "Run the tests"
           command: |
-            cd test/e2e && npm run test
-      - run:
-          name: "Log"
-          command: |
-            cat test-reports/selenium.log
+            cd test/e2e && npm run test && cat test-reports/selenium.log
 # version: 2.1
 # orbs:
 #   ci-tools: kanopi/ci-tools@1.4.0
