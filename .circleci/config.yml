@@ -20,7 +20,7 @@ jobs:
       - run:
           name: "Run the tests"
           command: |
-            cd test/e2e && npm run testjava -jar selenium-server-standalone-3.5.3.jar -log test-reports/selenium.log
+            cd test/e2e && npm run test
       - run:
           name: "Log"
           command: |
