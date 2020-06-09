@@ -1,5 +1,5 @@
 <dependency>
-<groupId>org.seleniumhq.selenium</groupId>
-<artifactId>selenium-java</artifactId>
-<version>3.X</version>
+ <groupId>org.seleniumhq.selenium</groupId>
+ <artifactId>selenium-server</artifactId>
+ <version>3.X</version>
 </dependency>
