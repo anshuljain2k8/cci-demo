@@ -16,11 +16,11 @@ jobs:
       - run:
           name: Start Selenium
           command: java -jar selenium-server-standalone-3.5.3.jar -log test-reports/selenium.log
-          background: truejava -jar selenium-server-standalone-3.5.3.jar -log test-reports/selenium.log
+          background: true
       - run:
           name: "Run the tests"
           command: |
-            cd test/e2e && npm run testjava -jar selenium-server-standalone-3.5.3.jar -log test-reports/selenium.log
+            cd test/e2e && npm run test && cat test-reports/selenium.log
 # version: 2.1
 # orbs:
 #   ci-tools: kanopi/ci-tools@1.4.0
