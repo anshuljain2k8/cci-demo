@@ -19,7 +19,8 @@ jobs:
           background: truejava -jar selenium-server-standalone-3.5.3.jar -log test-reports/selenium.log
       - run:
           name: View Log
-          command: cat test-reports/selenium.log
+          command: |
+            cat test-reports/selenium.log
       - run:
           name: "Run the tests"
           command: |
