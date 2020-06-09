@@ -33,7 +33,6 @@ function hook_menu() {
  *
  * @return string
  *   String of text page.
- *
  */
 function example_page() {
   return "page";
@@ -44,7 +43,6 @@ function example_page() {
  *
  * @return string
  *   Returns the string feed.
- *
  */
 function example_feed() {
   return "feed";
