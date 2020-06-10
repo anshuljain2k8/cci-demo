@@ -1,99 +1,77 @@
 version: 2.1
+orbs:
+  ci-tools: kanopi/ci-tools@1.4.0
+  pantheon: pantheon-systems/pantheon@0.2.0
+  cypress: cypress-io/cypress@1
+  playground: fauxalgore/playground@0.0.2
 workflows:
   build_push_test:
     jobs:      
-      - selenium_test
-jobs:
-  selenium_test:
+      - pantheon/push
+      - playground/backstop:
+          requires:
+            - pantheon/push
+      - cypress/run:
+          requires:
+            - pantheon/push
+          executor: cypress/browsers-chrome69
+          browser: chrome
+          store_artifacts: true
+          post-steps:
+            - store_test_results:
+                path: cypress/results
+      - approve_dev_env:
+          requires:
+            - pantheon/push
+          type: approval
+          filters:
+            branches:
+              only: "master"
+      - deploy_to_test:
+          requires:
+          - approve_dev_env
+          filters:
+            branches:
+              only: "master"
+      - approve_test_env:
+          type: approval
+          requires:
+          - deploy_to_test
+          filters:
+            branches:
+              only: "master"
+      - deploy_to_live:
+          requires:
+          - approve_test_env
+          filters:
+            branches:
+              only: "master"
+      - ci-tools/phpcs-drupal:
+          extensions: 'module,inc,install,theme,css,info'
+          standards: 'Drupal,DrupalPractice'
+          location: sites/all/modules/custom
+          requires:
+            - pantheon/push
+jobs:  
+  deploy_to_test:
     docker:
-      - image: circleci/node:jessie-browsers
+    - image: quay.io/pantheon-public/build-tools-ci:6.x
     steps:
-      - checkout
-      - run: mkdir test-reports
-      - run:
-          name: java version
-          command: java -version
-      - run:
-          name: Download Selenium
-          command: curl -O https://selenium-release.storage.googleapis.com/3.141/selenium-server-standalone-3.141.59.jar
-      - run:
-          name: Start Selenium
-          command: java -jar selenium-server-standalone-3.141.59.jar
-          background: true
-# version: 2.1
-# orbs:
-#   ci-tools: kanopi/ci-tools@1.4.0
-#   pantheon: pantheon-systems/pantheon@0.2.0
-#   cypress: cypress-io/cypress@1
-#   playground: fauxalgore/playground@0.0.2
-# workflows:
-#   build_push_test:
-#     jobs:      
-#       - pantheon/push
-#       - playground/backstop:
-#           requires:
-#             - pantheon/push
-#       - cypress/run:
-#           requires:
-#             - pantheon/push
-#           executor: cypress/browsers-chrome69
-#           browser: chrome
-#           store_artifacts: true
-#           post-steps:
-#             - store_test_results:
-#                 path: cypress/results
-#       - approve_dev_env:
-#           requires:
-#             - pantheon/push
-#           type: approval
-#           filters:
-#             branches:
-#               only: "master"
-#       - deploy_to_test:
-#           requires:
-#           - approve_dev_env
-#           filters:
-#             branches:
-#               only: "master"
-#       - approve_test_env:
-#           type: approval
-#           requires:
-#           - deploy_to_test
-#           filters:
-#             branches:
-#               only: "master"
-#       - deploy_to_live:
-#           requires:
-#           - approve_test_env
-#           filters:
-#             branches:
-#               only: "master"
-#       - ci-tools/phpcs-drupal:
-#           extensions: 'module,inc,install,theme,css,info'
-#           standards: 'Drupal,DrupalPractice'
-#           location: sites/all/modules/custom
-#           requires:
-#             - pantheon/push
-# jobs:  
-#   deploy_to_test:
-#     docker:
-#     - image: quay.io/pantheon-public/build-tools-ci:6.x
-#     steps:
-#     - run:
-#         name: Authenticate with Pantheon's CLI using a machine token
-#         command: terminus -n auth:login --machine-token="$TERMINUS_TOKEN"
-#     - run: echo "I should update the --note field to account for commit messages"
-#     - run: terminus env:deploy $TERMINUS_SITE.test --note="automatic deployment from CI"  --sync-content --cc
-#     # This cache clear shouldn't be necessary but run it just to be safe.
-#     - run: terminus env:clear-cache $TERMINUS_SITE.test
-#   deploy_to_live:
-#     docker:
-#     - image: quay.io/pantheon-public/build-tools-ci:6.x
-#     steps:
-#     - run:
-#         name: Authenticate with Pantheon's CLI using a machine token
-#        command: terminus -n auth:login --machine-token="$TERMINUS_TOKEN"
-#    - run: echo "I should update the --note field to account for commit messages"
-#     - run: terminus env:deploy $TERMINUS_SITE.live --note="automatic deployment from CI"  --sync-content --cc
-#     # This cache clear shouldn't be necessary but run it just to be safe.
-#     - run: terminus env:clear-cache $TERMINUS_SITE.live
+    - run:
+        name: Authenticate with Pantheon's CLI using a machine token
+        command: terminus -n auth:login --machine-token="$TERMINUS_TOKEN"
+    - run: echo "I should update the --note field to account for commit messages"
+    - run: terminus env:deploy $TERMINUS_SITE.test --note="automatic deployment from CI"  --sync-content --cc
+    # This cache clear shouldn't be necessary but run it just to be safe.
+    - run: terminus env:clear-cache $TERMINUS_SITE.test
+  deploy_to_live:
+    docker:
+    - image: quay.io/pantheon-public/build-tools-ci:6.x
+    steps:
+    - run:
+        name: Authenticate with Pantheon's CLI using a machine token
+       command: terminus -n auth:login --machine-token="$TERMINUS_TOKEN"
+   - run: echo "I should update the --note field to account for commit messages"
+    - run: terminus env:deploy $TERMINUS_SITE.live --note="automatic deployment from CI"  --sync-content --cc
+    # This cache clear shouldn't be necessary but run it just to be safe.
+    - run: terminus env:clear-cache $TERMINUS_SITE.live
