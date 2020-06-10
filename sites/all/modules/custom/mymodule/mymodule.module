@@ -2,7 +2,7 @@
 
 /**
  * @file
- * This is a test file to check for codesniffer issues.
+ * This is a test file to check for codesniffer issues
  */
 
 /**
@@ -34,7 +34,7 @@ function hook_menu() {
  * @return string
  *   String of text page.
  */
-function example_page() {
+function example_page(){
   return "page";
 }
 
