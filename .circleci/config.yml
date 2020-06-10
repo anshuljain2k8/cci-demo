@@ -70,8 +70,8 @@ jobs:
     steps:
     - run:
         name: Authenticate with Pantheon's CLI using a machine token
-       command: terminus -n auth:login --machine-token="$TERMINUS_TOKEN"
-   - run: echo "I should update the --note field to account for commit messages"
+        command: terminus -n auth:login --machine-token="$TERMINUS_TOKEN"
+    - run: echo "I should update the --note field to account for commit messages"
     - run: terminus env:deploy $TERMINUS_SITE.live --note="automatic deployment from CI"  --sync-content --cc
     # This cache clear shouldn't be necessary but run it just to be safe.
     - run: terminus env:clear-cache $TERMINUS_SITE.live
